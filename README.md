@@ -23,9 +23,9 @@ Applications:
 Requirements:
 
 - Any of Arduino (Uno, Mega, Leonardo, Feather32u4 BLE)
-- Bluetoth Module:
+- Bluetooth Module:
 - iOS useres(BLE only e.g. Adafruit Bluefruit)
-- Android (Classic or BLE e.g. HC-06,HC-05,Adafruit Bluefruit).
+- Android (Classic or BLE e.g. HC-06,HC-05, Adafruit Bluefruit).
 
 Check this youtube to see in real world:
 http://
