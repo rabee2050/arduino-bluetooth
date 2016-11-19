@@ -4,7 +4,7 @@
   info@tatco.cc
 
   Note:
-  Make sure the baud rate of the bluetooth is 9600.
+  Make sure the baud rate of the bluetooth module is 9600bps.
 
   Connection:
   arduino_rx_pin  ------->   Bluetooth_tx_pin
