@@ -19,7 +19,7 @@
   If you are using Bluefruit module then make sure to connect CTS pin to ground.
 
 */
-#define arduino_rx_pin 10  //must be inturrpt pin
+#define arduino_rx_pin 10  
 #define arduino_tx_pin 11
 
 #include <SoftwareSerial.h>
