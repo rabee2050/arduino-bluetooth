@@ -1,4 +1,4 @@
-# Arduino-Bluetooth-Kit
+# Arduino-Bluetooth-Kit-V2
 This sketch work with the app on both iOS and Android : "Arduino Bluetooth Kit"
 
 Features:
