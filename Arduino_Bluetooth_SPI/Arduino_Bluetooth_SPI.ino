@@ -32,8 +32,8 @@
 #include "Adafruit_BluefruitLE_SPI.h"
 #include "Adafruit_BluefruitLE_UART.h"
 
-#define lcd_size 3 //this will define number of LCD on the phone app
-#define refresh_time  5 //the data will be updated on the app every 5 second
+#define lcd_size 3 //this will define number of LCD on the phone app.
+#define refresh_time  5 //the data will be updated on the app every 5 seconds.
 
 char mode_action[54];
 int mode_val[54];
