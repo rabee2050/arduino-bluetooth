@@ -9,7 +9,7 @@ Features:
 - Read analog pins.
 - Charts: for monitoring sensors data.
 - LCD: you can send any data from Arduino to your mobile phone.
-- Super easy user interface.
+- Super easy user interface.
 - Remember last status of the pins.
 - Change the mode of the pin (Output, PWM or Input).
 - Automatic connect to Arduino.
