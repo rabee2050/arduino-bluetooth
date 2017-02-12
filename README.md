@@ -5,7 +5,10 @@ Features:
 
 - Read & write digital pins. 
 - Read & write PWM pins.
+- Control SERVO motors.
 - Read analog pins.
+- Charts: for monitoring sensors data.
+- LCD: you can send any data from Arduino to your mobile phone.
 - Super easy user interface.
 - Remember last status of the pins.
 - Change the mode of the pin (Output, PWM or Input).
@@ -19,6 +22,7 @@ Applications:
 - Hoppy projects.
 - Schools & university projects.
 - Remote control.
+- Robots control.
 
 Requirements:
 
@@ -28,4 +32,4 @@ Requirements:
 - Android (Classic or BLE e.g. HC-06,HC-05, Adafruit Bluefruit).
 
 Check this youtube to see in real world:
-http://
+https://www.youtube.com/watch?v=Eetuk_8u3sU
