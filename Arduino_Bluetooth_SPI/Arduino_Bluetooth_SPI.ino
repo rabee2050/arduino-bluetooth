@@ -14,15 +14,15 @@
   BLUEFRUIT_SPI_IRQ              7
   BLUEFRUIT_SPI_RST              4
 
-  If you are using Feather32u4 then Pin A0 used to measure 
-  battery status, take a wire from Battery pin through 
-  voltage devider then connect to pin A0.(You have to uncomment 
-  few lines at void allstatus).
+  If you are using Feather32u4 then Pin A0 used to measure
+  battery status, take a wire from Battery pin through
+  voltage devider then connect to pin A0.
 
 
 */
 
 #include <Arduino.h>
+#include <Servo.h>
 #include <SPI.h>
 #if not defined (_VARIANT_ARDUINO_DUE_X_) && not defined (_VARIANT_ARDUINO_ZERO_)
 #include <SoftwareSerial.h>
@@ -32,10 +32,15 @@
 #include "Adafruit_BluefruitLE_SPI.h"
 #include "Adafruit_BluefruitLE_UART.h"
 
+#define lcd_size 3 //this will define number of LCD on the phone app
+#define refresh_time  5 //the data will be updated on the app every 5 second
 
 char mode_action[54];
 int mode_val[54];
 String mode_feedback;
+String lcd[lcd_size];
+unsigned long last = millis();
+Servo myServo[54];
 
 #define BUFSIZE                        128   // Size of the read buffer for incoming data
 #define VERBOSE_MODE                   true  // If set to 'true' enables debug output
@@ -117,22 +122,18 @@ void setup(void)
 #endif
 }
 
-void update_input() {
-  for (int i = 0; i < sizeof(mode_action); i++) {
-    if (mode_action[i] == 'i') {
-      mode_val[i] = digitalRead(i);
-
-    }
-  }
-}
-
 void loop(void)
 {
-  if ( mySerial.available() )
+  lcd[0] = "Test 1 LCD";// you can send any data to your mobile phone.
+  lcd[1] = analogRead(1);// you send analog value of A1
+  lcd[2] = battery_status();// here you send the battery status if you are using Adafruit BLE 
+ 
+  if (mySerial.available())
   {
-    update_input();
     process();
   }
+  update_input();
+  update_app();//will update all values in the mobile app.
 }
 
 void process() {
@@ -149,6 +150,10 @@ void process() {
 
   if (command == "mode") {
     modeCommand();
+  }
+
+  if (command == "servo") {
+    servo();
   }
 
   if (command == "allonoff") {
@@ -184,63 +189,97 @@ void analogCommand() {
 
 }
 
+void servo() {
+  int pin, value;
+  pin = mySerial.parseInt();
+  if (mySerial.read() == '/') {
+    value = mySerial.parseInt();
+    myServo[pin].write(value);
+    mode_val[pin] = value;
+  }
+}
+
 
 void modeCommand() {
   int pin;
   pin = mySerial.parseInt();
   mode_feedback = "";
-  String mode = mySerial.readStringUntil(' ');
-  if (mode == "/input") {
-    pinMode(pin, INPUT);
-    mode_action[pin] = 'i';
-    mode_feedback += "D";
-    mode_feedback += pin;
-    mode_feedback += " set as INPUT!";
+  if (mySerial.read() == '/') {
+
+    String mode = mySerial.readStringUntil('\r');
+    if (mode == "input") {
+      pinMode(pin, INPUT);
+      mode_action[pin] = 'i';
+      mode_feedback += "D";
+      mode_feedback += pin;
+      mode_feedback += " set as INPUT!";
+    }
+
+    if (mode == "output") {
+      pinMode(pin, OUTPUT);
+      mode_action[pin] = 'o';
+      mode_feedback += "D";
+      mode_feedback += pin;
+      mode_feedback += " set as OUTPUT!";
+    }
+
+    if (mode == "pwm") {
+      pinMode(pin, OUTPUT);
+      mode_action[pin] = 'p';
+      mode_feedback += "D";
+      mode_feedback += pin;
+      mode_feedback += " set as PWM!";
+    }
+
+    if (mode == "servo") {
+      myServo[pin].attach(pin);
+      mode_action[pin] = 's';
+      mode_feedback += "D";
+      mode_feedback += pin;
+      mode_feedback += " set as SERVO!";
+    }
+    allstatus();
   }
-
-  if (mode == "/output") {
-    pinMode(pin, OUTPUT);
-    mode_action[pin] = 'o';
-    mode_feedback += "D";
-    mode_feedback += pin;
-    mode_feedback += " set as OUTPUT!";
-  }
-
-  if (mode == "/pwm") {
-    pinMode(pin, OUTPUT);
-    mode_action[pin] = 'p';
-    mode_feedback += "D";
-    mode_feedback += pin;
-    mode_feedback += " set as PWM!";
-  }
-
-  allstatus();
-
 }
 
 void allonoff() {
   int pin, value;
   value = mySerial.parseInt();
-#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
-  for (byte i = 0; i <= 13; i++) {
+  for (byte i = 0; i < sizeof(mode_action); i++) {
     if (mode_action[i] == 'o') {
       digitalWrite(i, value);
       mode_val[i] = value;
     }
   }
-#endif
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-  for (byte i = 0; i <= 53; i++) {
-    if (mode_action[i] == 'o') {
-      digitalWrite(i, value);
-      mode_val[i] = value;
-    }
-  }
-#endif
-  allstatus();
-
 }
 
+void update_input() {
+  for (int i = 0; i < sizeof(mode_action); i++) {
+    if (mode_action[i] == 'i') {
+      mode_val[i] = digitalRead(i);
+
+    }
+  }
+}
+
+void update_app() {
+  int refreshVal=refresh_time*1000;
+  if (millis() - last > refreshVal) {
+    allstatus();
+    last = millis();
+  }
+}
+
+float battery_status(){
+float measuredvbat = analogRead(0);
+      measuredvbat *= 2;
+      measuredvbat *= 3.3;
+      measuredvbat /= 1024;
+      measuredvbat -= 3.45;
+      measuredvbat *= 100 / .75;
+      measuredvbat = abs(measuredvbat);
+      return measuredvbat;
+}
 
 void allstatus() {
 
@@ -288,32 +327,33 @@ void allstatus() {
     if (i != 15)data_status += ",";
   }
 #endif
-  //uno+pro //nano //leo+lilypad //Feather 
+  //uno+pro //nano //leo+lilypad //Feather
 #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)//Leo
   for (byte i = 0; i <= 5; i++) {
-    //    if (i == 0) {   //Uncomment this if you want to measure battery status via pin A0
-    //      float measuredvbat = analogRead(i);
-    //      measuredvbat *= 2;
-    //      measuredvbat *= 3.3;
-    //      measuredvbat /= 1024;
-    //      measuredvbat -= 3.2;
-    //      measuredvbat *= 100;
-    //      data_status += abs(measuredvbat);
-    //    } else {
-    data_status += analogRead(i);
-    //}
+      data_status += analogRead(i);
     if (i != 5)data_status += ",";
   }
 #endif
   data_status += "],";
+
+  data_status += "\"lcd\":[";
+  for (byte i = 0; i <= lcd_size-1; i++) {
+    data_status += "\"";
+    data_status += lcd[i];
+    data_status += "\"";
+    if (i != lcd_size-1)data_status += ",";
+  }
+  data_status += "],";
+  
   data_status += "\"mode_feedback\":\"";
   data_status += mode_feedback;
   data_status += "\",";
+  
   data_status += "\"boardname\":\"";
-  data_status += "kit_feather";
-  data_status += "\",\"boardstatus\":1";
+  data_status += "kit_feather\",";
+  data_status += "\"boardstatus\":1";
   data_status += "}";
   mySerial.println(data_status);
-  Serial.print(data_status);
+  Serial.println(data_status);
   mode_feedback = "";
 }
