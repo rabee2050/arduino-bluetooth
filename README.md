@@ -1,5 +1,5 @@
 # Arduino-Bluetooth-V3
-This sketch work with the app on both iOS and Android : "Arduino Bluetooth".
+This sketch work with the app on both iOS and Android : "Arduino Bluetooth Kit".
 
 iOS- https://itunes.apple.com/us/app/arduino-bluetooth-kit/id1172121838?mt=8 
 
