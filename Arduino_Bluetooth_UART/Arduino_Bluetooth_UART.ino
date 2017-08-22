@@ -18,8 +18,8 @@
 #include <SoftwareSerial.h>
 #include <Servo.h>
 
-#define arduino_rx_pin 2  //must be inturrpt pin 2
-#define arduino_tx_pin 3  //
+#define arduino_rx_pin 10  //must be inturrpt pin 
+#define arduino_tx_pin 11  //
 #define lcd_size 3 //this will define number of LCD on the phone app
 int refresh_time = 15; //the data will be updated on the app every 5 seconds.
 
