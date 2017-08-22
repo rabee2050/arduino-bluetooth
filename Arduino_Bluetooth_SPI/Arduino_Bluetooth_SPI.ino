@@ -18,6 +18,8 @@
   battery status, take a wire from Battery pin through
   voltage devider then connect to pin A0.
 
+  
+
 
 */
 
@@ -33,7 +35,7 @@
 #include "Adafruit_BluefruitLE_UART.h"
 
 #define lcd_size 3 //this will define number of LCD on the phone app.
-#define refresh_time  5 //the data will be updated on the app every 5 seconds.
+int refresh_time = 15; //the data will be updated on the app every 5 seconds.
 
 char mode_action[54];
 int mode_val[54];
@@ -140,6 +142,11 @@ void process() {
 
   String command = mySerial.readStringUntil('/');
 
+  if (command == "terminal") {
+    terminalCommand();
+  }
+
+  
   if (command == "digital") {
     digitalCommand();
   }
@@ -160,6 +167,10 @@ void process() {
     allonoff();
   }
 
+  if (command == "refresh") {
+    refresh();
+  }
+
   if (command == "allstatus") {
     allstatus();
   }
@@ -167,6 +178,10 @@ void process() {
 
 }
 
+void terminalCommand() {//Here you recieve data form app terminal
+  String data = mySerial.readStringUntil('\r');
+  Serial.println(data);
+}
 
 void digitalCommand() {
   int pin, value;
@@ -253,20 +268,29 @@ void allonoff() {
   }
 }
 
+void refresh() {
+  int value;
+  value = mySerial.parseInt();
+  refresh_time = value;
+  
+}
+
 void update_input() {
   for (int i = 0; i < sizeof(mode_action); i++) {
     if (mode_action[i] == 'i') {
       mode_val[i] = digitalRead(i);
-
     }
   }
 }
 
 void update_app() {
+
+  if(refresh_time!=0){
   int refreshVal=refresh_time*1000;
   if (millis() - last > refreshVal) {
     allstatus();
     last = millis();
+  }
   }
 }
 
@@ -286,7 +310,7 @@ void allstatus() {
   String data_status;
   data_status += "{";
 
-  data_status += "\"mode\":[";
+  data_status += "\"m\":[";//m for pin mode
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)//Mega
   for (byte i = 0; i <= 53; i++) {
     data_status += "\"";
@@ -305,7 +329,7 @@ void allstatus() {
 #endif
   data_status += "],";
 
-  data_status += "\"mode_val\":[";
+  data_status += "\"v\":[";//v for mode value
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)//Mega
   for (byte i = 0; i <= 53; i++) {
     data_status += mode_val[i];
@@ -320,7 +344,7 @@ void allstatus() {
 #endif
   data_status += "],";
 
-  data_status += "\"analog\":[";
+  data_status += "\"a\":[";//a for analog
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)//Mega
   for (byte i = 0; i <= 15; i++) {
     data_status += analogRead(i);
@@ -336,7 +360,7 @@ void allstatus() {
 #endif
   data_status += "],";
 
-  data_status += "\"lcd\":[";
+  data_status += "\"l\":[";//for lcd
   for (byte i = 0; i <= lcd_size-1; i++) {
     data_status += "\"";
     data_status += lcd[i];
@@ -345,13 +369,12 @@ void allstatus() {
   }
   data_status += "],";
   
-  data_status += "\"mode_feedback\":\"";
+  data_status += "\"f\":\"";//f for feedback
   data_status += mode_feedback;
   data_status += "\",";
-  
-  data_status += "\"boardname\":\"";
-  data_status += "kit_feather\",";
-  data_status += "\"boardstatus\":1";
+  data_status += "\"t\":\"";//t for time
+  data_status +=  refresh_time;
+  data_status +="\"";
   data_status += "}";
   mySerial.println(data_status);
   Serial.println(data_status);
