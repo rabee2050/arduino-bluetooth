@@ -1,7 +1,9 @@
 # Arduino-Bluetooth-V3
-This sketch work with the app on both iOS and Android : "Arduino Bluetooth Controller"
-iOS- https://itunes.apple.com/us/app/arduino-bluetooth-kit/id1172121838?mt=8
-Android- https://play.google.com/store/apps/details?id=com.tatco.bluetooth
+This sketch work with the app on both iOS and Android : "Arduino Bluetooth".
+
+iOS- https://itunes.apple.com/us/app/arduino-bluetooth-kit/id1172121838?mt=8 
+
+Android- https://play.google.com/store/apps/details?id=com.tatco.bluetooth 
 
 Features:
 
