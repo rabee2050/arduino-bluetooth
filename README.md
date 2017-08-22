@@ -1,5 +1,7 @@
-# Arduino-Bluetooth-Kit-V2
-This sketch work with the app on both iOS and Android : "Arduino Bluetooth Kit"
+# Arduino-Bluetooth-V3
+This sketch work with the app on both iOS and Android : "Arduino Bluetooth Controller"
+iOS- https://itunes.apple.com/us/app/arduino-bluetooth-kit/id1172121838?mt=8
+Android- https://play.google.com/store/apps/details?id=com.tatco.bluetooth
 
 Features:
 
@@ -28,7 +30,7 @@ Requirements:
 
 - Any of Arduino (Uno, Mega, Leonardo, Feather32u4 BLE)
 - Bluetooth Module:
-- iOS useres(BLE only e.g. Adafruit Bluefruit)
+- iOS useres(BLE only e.g. Adafruit Bluefruit, HM-10, CC2541, TI, Redbear, Seeeduino, or any hardware with a "Serial Like" service.)
 - Android (Classic or BLE e.g. HC-06,HC-05, Adafruit Bluefruit).
 
 Check this youtube to see in real world:
