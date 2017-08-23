@@ -4,21 +4,28 @@
   info@tatco.cc
 
   Note:
-  Make sure the baud rate of the bluetooth is 9600, and it comes
-  by default if it is new kit.
+  The baud rate of the bluetooth module should be 9600.
 
   Connection:
   arduino_rx_pin  ------->   Bluetooth_tx_pin
   arduino_tx_pin  ------->   Bluetooth_rx_pin
 
+  Pins that can be used as rx on Mega and Mega 2560:
+  10, 11, 12, 13, 50, 51, 52, 53, 62, 63, 64, 65, 66, 67, 68, 69
+  
+  Pins that can be used as rx on on Leonardo:
+  8, 9, 10, 11, 14 (MISO), 15 (SCK), 16 (MOSI).
+  
+  If you are using Bluefruit module then make sure to connect CTS pin to ground.
 
+  
 */
 
 
 #include <SoftwareSerial.h>
 #include <Servo.h>
 
-#define arduino_rx_pin 10  //must be inturrpt pin 
+#define arduino_rx_pin 10  //must be inturrpt pin
 #define arduino_tx_pin 11  //
 #define lcd_size 3 //this will define number of LCD on the phone app
 int refresh_time = 15; //the data will be updated on the app every 5 seconds.
