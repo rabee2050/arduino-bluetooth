@@ -13,6 +13,7 @@ Features:
 - Read analog pins.
 - Charts: for monitoring sensors data.
 - LCD: you can send any data from Arduino to your mobile phone.
+- Terminal: you can send any data from mobile phone to your Arduino.
 - Super easy user interface.
 - Remember last status of the pins.
 - Change the mode of the pin (Output, PWM, SERVO or Input).
