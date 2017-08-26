@@ -12,13 +12,13 @@
 
   Pins that can be used as rx on Mega and Mega 2560:
   10, 11, 12, 13, 50, 51, 52, 53, 62, 63, 64, 65, 66, 67, 68, 69
-  
+
   Pins that can be used as rx on on Leonardo:
   8, 9, 10, 11, 14 (MISO), 15 (SCK), 16 (MOSI).
-  
+
   If you are using Bluefruit module then make sure to connect CTS pin to ground.
 
-  
+
 */
 
 
@@ -28,7 +28,7 @@
 #define arduino_rx_pin 10  //must be inturrpt pin
 #define arduino_tx_pin 11  //
 #define lcd_size 3 //this will define number of LCD on the phone app
-int refresh_time = 15; //the data will be updated on the app every 5 seconds.
+int refresh_time = 3; //the data will be updated on the app every 3 seconds.
 
 SoftwareSerial mySerial(arduino_rx_pin, arduino_tx_pin); // RX, TX
 
@@ -45,50 +45,19 @@ void setup(void)
   //  while (!Serial) {
   //    ; // wait for serial port to connect. Needed for native USB port only
   //  }
-  Serial.println("Goodnight moon!");
 
   // set the data rate for the SoftwareSerial port
   mySerial.begin(9600);//you have to change this if you change bluetooth baudrate.
-  //mySerial.println("Hello, world?");
 
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-  for (byte i = 0; i <= 53; i++) {
-    if (i == 0 || i == 1 || i == arduino_rx_pin || i == arduino_tx_pin ) {
-      mode_action[i] = 'x';
-      mode_val[i] = 'x';
-    }
-    else {
-      mode_action[i] = 'o';
-      mode_val[i] = 0;
-      pinMode(i, OUTPUT);
-    }
-  }
+  kitSetup();
 
-#endif
-
-#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
-for (byte i = 0; i <= 13; i++) {
-  if (i == 0 || i == 1 || i == arduino_rx_pin || i == arduino_tx_pin ) {
-    mode_action[i] = 'x';
-    mode_val[i] = 'x';
-  }
-  else {
-    mode_action[i] = 'o';
-    mode_val[i] = 0;
-    pinMode(i, OUTPUT);
-  }
 }
-#endif
-}
-
-
 
 void loop(void)
 {
   lcd[0] = "Test 1 LCD";// you can send any data to your mobile phone.
-  lcd[1] = "Test 2 LCD";// you can send any data to your mobile phone.
-  lcd[2] = analogRead(1);//  send analog value of A1
- 
+  lcd[1] = analogRead(1);// you can send any data to your mobile phone.
+
   if ( mySerial.available() )
   {
     process();
@@ -104,7 +73,7 @@ void process() {
   if (command == "terminal") {
     terminalCommand();
   }
-  
+
   if (command == "digital") {
     digitalCommand();
   }
@@ -135,6 +104,7 @@ void process() {
 
 void terminalCommand() {//Here you recieve data form app terminal
   String data = mySerial.readStringUntil('\r');
+  lcd[2] = data;//show data on LCD #2
   Serial.println(data);
 }
 
@@ -226,7 +196,7 @@ void refresh() {
   int value;
   value = mySerial.parseInt();
   refresh_time = value;
-  
+
 }
 
 
@@ -241,12 +211,12 @@ void update_input() {
 
 void update_app() {
 
-  if(refresh_time!=0){
-  int refreshVal=refresh_time*1000;
-  if (millis() - last > refreshVal) {
-    allstatus();
-    last = millis();
-  }
+  if (refresh_time != 0) {
+    int refreshVal = refresh_time * 1000;
+    if (millis() - last > refreshVal) {
+      allstatus();
+      last = millis();
+    }
   }
 }
 
@@ -306,11 +276,11 @@ void allstatus() {
   data_status += "],";
 
   data_status += "\"l\":[";// for lcd
-  for (byte i = 0; i <= lcd_size-1; i++) {
+  for (byte i = 0; i <= lcd_size - 1; i++) {
     data_status += "\"";
     data_status += lcd[i];
     data_status += "\"";
-    if (i != lcd_size-1)data_status += ",";
+    if (i != lcd_size - 1)data_status += ",";
   }
   data_status += "],";
 
@@ -319,9 +289,40 @@ void allstatus() {
   data_status += "\",";
   data_status += "\"t\":\"";//t for time.
   data_status +=  refresh_time;
-  data_status +="\"";
+  data_status += "\"";
   data_status += "}";
   mySerial.println(data_status);
-  Serial.println(data_status);
   mode_feedback = "";
+}
+
+void kitSetup() {
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  for (byte i = 0; i <= 53; i++) {
+    if (i == 0 || i == 1 || i == arduino_rx_pin || i == arduino_tx_pin ) {
+      mode_action[i] = 'x';
+      mode_val[i] = 'x';
+    }
+    else {
+      mode_action[i] = 'o';
+      mode_val[i] = 0;
+      pinMode(i, OUTPUT);
+    }
+  }
+
+#endif
+
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+  for (byte i = 0; i <= 13; i++) {
+    if (i == 0 || i == 1 || i == arduino_rx_pin || i == arduino_tx_pin ) {
+      mode_action[i] = 'x';
+      mode_val[i] = 'x';
+    }
+    else {
+      mode_action[i] = 'o';
+      mode_val[i] = 0;
+      pinMode(i, OUTPUT);
+    }
+  }
+#endif
+
 }
