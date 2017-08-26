@@ -4,7 +4,7 @@
   info@tatco.cc
 
   Note:
-  This sketch compatible with Bluefruit SPI version.
+  This sketch compatible with Bluefruit SPI and Feather Bluefruit versions.
 
   Connection:
   BLUEFRUIT_MOSI                 Arduino MOSI
@@ -13,13 +13,6 @@
   BLUEFRUIT_SPI_CS               8
   BLUEFRUIT_SPI_IRQ              7
   BLUEFRUIT_SPI_RST              4
-
-  If you are using Feather32u4 then Pin A0 used to measure
-  battery status, take a wire from Battery pin through
-  voltage devider then connect to pin A0.
-
-  
-
 
 */
 
@@ -35,7 +28,7 @@
 #include "Adafruit_BluefruitLE_UART.h"
 
 #define lcd_size 3 //this will define number of LCD on the phone app.
-int refresh_time = 15; //the data will be updated on the app every 5 seconds.
+int refresh_time = 3; //the data will be updated on the app every 3 seconds.
 
 char mode_action[54];
 int mode_val[54];
@@ -94,42 +87,17 @@ void setup(void)
 
   mySerial.setMode(BLUEFRUIT_MODE_DATA);
 
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-  for (byte i = 0; i <= 53; i++) {
-    if (i == 0 || i == 1 || i == BLUEFRUIT_SPI_RST  || i == BLUEFRUIT_SPI_IRQ || i == BLUEFRUIT_SPI_CS ) {
-      mode_action[i] = 'x';
-      mode_val[i] = 'x';
-    }
-    else {
-      mode_action[i] = 'o';
-      mode_val[i] = 0;
-      pinMode(i, OUTPUT);
-    }
-  }
+  kitSetup();
 
-#endif
-
-#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
-  for (byte i = 0; i <= 13; i++) {
-    if (i == 0 || i == 1 || i == BLUEFRUIT_SPI_RST  || i == BLUEFRUIT_SPI_IRQ || i == BLUEFRUIT_SPI_CS ) {
-      mode_action[i] = 'x';
-      mode_val[i] = 'x';
-    }
-    else {
-      mode_action[i] = 'o';
-      mode_val[i] = 0;
-      pinMode(i, OUTPUT);
-    }
-  }
-#endif
 }
+
 
 void loop(void)
 {
   lcd[0] = "Test 1 LCD";// you can send any data to your mobile phone.
-  lcd[1] = analogRead(1);// you send analog value of A1
-  lcd[2] = battery_status();// here you send the battery status if you are using Adafruit BLE 
- 
+  lcd[1] = analogRead(1);// here you send the battery status if you are using Feather32u4 Adafruit BLE
+  
+
   if (mySerial.available())
   {
     process();
@@ -146,7 +114,7 @@ void process() {
     terminalCommand();
   }
 
-  
+
   if (command == "digital") {
     digitalCommand();
   }
@@ -180,6 +148,7 @@ void process() {
 
 void terminalCommand() {//Here you recieve data form app terminal
   String data = mySerial.readStringUntil('\r');
+  lcd[2] = data;//show data on LCD #2
   Serial.println(data);
 }
 
@@ -272,7 +241,7 @@ void refresh() {
   int value;
   value = mySerial.parseInt();
   refresh_time = value;
-  
+
 }
 
 void update_input() {
@@ -285,24 +254,24 @@ void update_input() {
 
 void update_app() {
 
-  if(refresh_time!=0){
-  int refreshVal=refresh_time*1000;
-  if (millis() - last > refreshVal) {
-    allstatus();
-    last = millis();
-  }
+  if (refresh_time != 0) {
+    int refreshVal = refresh_time * 1000;
+    if (millis() - last > refreshVal) {
+      allstatus();
+      last = millis();
+    }
   }
 }
 
-float battery_status(){
-float measuredvbat = analogRead(0);
-      measuredvbat *= 2;
-      measuredvbat *= 3.3;
-      measuredvbat /= 1024;
-      measuredvbat -= 3.45;
-      measuredvbat *= 100 / .75;
-      measuredvbat = abs(measuredvbat);
-      return measuredvbat;
+float battery_status() {
+  float measuredvbat = analogRead(0);
+  measuredvbat *= 2;
+  measuredvbat *= 3.3;
+  measuredvbat /= 1024;
+  measuredvbat -= 3.45;
+  measuredvbat *= 100 / .75;
+  measuredvbat = abs(measuredvbat);
+  return measuredvbat;
 }
 
 void allstatus() {
@@ -354,29 +323,60 @@ void allstatus() {
   //uno+pro //nano //leo+lilypad //Feather
 #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)//Leo
   for (byte i = 0; i <= 5; i++) {
-      data_status += analogRead(i);
+    data_status += analogRead(i);
     if (i != 5)data_status += ",";
   }
 #endif
   data_status += "],";
 
   data_status += "\"l\":[";//for lcd
-  for (byte i = 0; i <= lcd_size-1; i++) {
+  for (byte i = 0; i <= lcd_size - 1; i++) {
     data_status += "\"";
     data_status += lcd[i];
     data_status += "\"";
-    if (i != lcd_size-1)data_status += ",";
+    if (i != lcd_size - 1)data_status += ",";
   }
   data_status += "],";
-  
+
   data_status += "\"f\":\"";//f for feedback
   data_status += mode_feedback;
   data_status += "\",";
   data_status += "\"t\":\"";//t for time
   data_status +=  refresh_time;
-  data_status +="\"";
+  data_status += "\"";
   data_status += "}";
   mySerial.println(data_status);
-  Serial.println(data_status);
   mode_feedback = "";
+}
+
+void kitSetup() {
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+  for (byte i = 0; i <= 53; i++) {
+    if (i == 0 || i == 1 || i == BLUEFRUIT_SPI_RST  || i == BLUEFRUIT_SPI_IRQ || i == BLUEFRUIT_SPI_CS ) {
+      mode_action[i] = 'x';
+      mode_val[i] = 'x';
+    }
+    else {
+      mode_action[i] = 'o';
+      mode_val[i] = 0;
+      pinMode(i, OUTPUT);
+    }
+  }
+
+#endif
+
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
+  for (byte i = 0; i <= 13; i++) {
+    if (i == 0 || i == 1 || i == BLUEFRUIT_SPI_RST  || i == BLUEFRUIT_SPI_IRQ || i == BLUEFRUIT_SPI_CS ) {
+      mode_action[i] = 'x';
+      mode_val[i] = 'x';
+    }
+    else {
+      mode_action[i] = 'o';
+      mode_val[i] = 0;
+      pinMode(i, OUTPUT);
+    }
+  }
+#endif
+
 }
