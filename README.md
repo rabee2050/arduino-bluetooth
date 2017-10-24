@@ -37,4 +37,4 @@ Requirements:
 - Android (Classic or BLE e.g. HC-06,HC-05, Adafruit Bluefruit).
 
 Check this youtube to see in real world:
-https://www.youtube.com/watch?v=Eetuk_8u3sU
+https://www.youtube.com/watch?v=EmQELmq86A4&t=96s
