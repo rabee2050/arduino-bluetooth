@@ -26,7 +26,7 @@
 #include <Servo.h>
 
 #define arduino_rx_pin 10  //must be inturrpt pin
-#define arduino_tx_pin 8  //
+#define arduino_tx_pin 11  //
 #define lcdSize 3 //this will define number of LCD on the phone app
 int refreshTime = 3; //the app data will be updated every 3 seconds.
 
