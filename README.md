@@ -1,4 +1,4 @@
-# Arduino-Bluetooth-Beta(Dont Download This version)
+# Arduino-Bluetooth-Beta(This version isn't for public yet)
 This sketch work with the app on both iOS and Android : "Arduino Bluetooth Kit".
 
 - iOS(Free): Comming Soon.
