@@ -1,7 +1,28 @@
 /*
-  Done by TATCO Inc.
-  Contacts:
-  info@tatco.cc
+  Title  : Bluetooth Kit
+  version: V4.
+  Sketch Type: SPI.
+  Contact: info@tatco.cc
+  Done By: TATCO Inc.
+  github : https://github.com/rabee2050/arduino-bluetooth
+  Youtube: http://tatco.cc
+
+  App - Pro Version:
+  iOS    : https://itunes.apple.com/us/app/arduino-bluetooth-kit/id1172121838?mt=8
+  Android: https://play.google.com/store/apps/details?id=com.tatco.bluetooth
+
+  App - Free Version:
+  iOS    : Coming Soon
+  Android: https://play.google.com/store/apps/details?id=com.tatco.bluetoothfree
+  
+  Release Notes:
+  - V1 Created 01 Dec 2016
+  - V2 Updated 01 Jun 2017
+  - V3 Updated 01 Dec 2017
+  - V4 Updated 12 Dec 2018
+
+  Compatibale Bluetooth Module:
+  - Adafruit Bluefruit SPI , Adafruit Feather Bluefruit.
 
   Note:
   This sketch compatible with Bluefruit SPI and Feather Bluefruit versions.
