@@ -1,6 +1,6 @@
 /*
   Title  : Bluetooth Kit
-  version: V4.
+  version: V4.1
   Sketch Type: SPI.
   Contact: info@tatco.cc
   Done By: TATCO Inc.
@@ -12,14 +12,15 @@
   Android: https://play.google.com/store/apps/details?id=com.tatco.bluetooth
 
   App - Free Version:
-  iOS    : Coming Soon
+  iOS    : https://itunes.apple.com/us/app/bluetooth-kit-lite/id1446587546?ls=1&mt=8
   Android: https://play.google.com/store/apps/details?id=com.tatco.bluetoothfree
   
   Release Notes:
-  - V1 Created 01 Dec 2016
-  - V2 Updated 01 Jun 2017
-  - V3 Updated 01 Dec 2017
-  - V4 Updated 12 Dec 2018
+  - V1   Created 01 Dec 2016
+  - V2   Updated 01 Jun 2017
+  - V3   Updated 01 Dec 2017
+  - V4   Updated 12 Dec 2018
+  - V4.1 Updated 06 Apr 2019 / Minor Changes
 
   Compatibale Bluetooth Module:
   - Adafruit Bluefruit SPI , Adafruit Feather Bluefruit.
@@ -59,7 +60,7 @@ unsigned long last = millis();
 Servo servoArray[54];
 String boardType;
 String protectionPassword = "";
-String appBuildVersion = "4.0";
+String appBuildVersion = "4.1";
 
 #define BUFSIZE                        256   // Size of the read buffer for incoming data
 #define VERBOSE_MODE                   true  // If set to 'true' enables debug output
