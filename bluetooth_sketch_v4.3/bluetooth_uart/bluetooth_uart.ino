@@ -1,6 +1,6 @@
 /*
   Title  : Bluetooth Kit
-  version: V4.1
+  version: V4.3
   Sketch Type: UART.
   Contact: info@tatco.cc
   Done By: TATCO Inc.
@@ -22,6 +22,7 @@
   - V3   Updated 01 Dec 2017
   - V4   Updated 12 Dec 2018
   - V4.1 Updated 06 Apr 2019 / Minor Changes
+  - V4.3 Updated 08 Apr 2025 / Minor Changes
 
   Compatibale Bluetooth Module:
   - Adafruit Bluefruit UART , HM-10, CC2541, TI, Redbear, 
@@ -65,7 +66,7 @@ unsigned long last = millis();
 Servo servoArray[54];
 String boardType;
 String protectionPassword = "";
-String appBuildVersion = "4.1";
+String appBuildVersion = "4.3";
 
 void setup(void)
 {
